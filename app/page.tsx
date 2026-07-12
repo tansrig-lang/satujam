@@ -18,11 +18,12 @@ export default function Home() {
                   const [brands, setBrands] =
   useState<string[]>(["Semua"]);
   useEffect(() => {
-  (
+  console.log(
     "Homepage brands:",
     localStorage.getItem("brands")
   );
 }, []);
+  
                     
                        useEffect(() => {
   const savedProducts = JSON.parse(
