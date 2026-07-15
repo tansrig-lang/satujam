@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 
-export default function CheckoutPage() {
+type CheckoutFormProps = {
+  productName: string;
+  productPrice: string;
+  productWeight: number;
+};
+
+export default function CheckoutForm({
+  productName,
+  productPrice,
+  productWeight,
+}: CheckoutFormProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [province, setProvince] = useState("");
@@ -22,6 +32,23 @@ export default function CheckoutPage() {
       }}
     >
       <h1>Checkout SATUJAM.ID</h1>
+      <div
+  style={{
+    background: "#111",
+    padding: "20px",
+    borderRadius: "15px",
+    marginTop: "20px",
+    marginBottom: "20px",
+  }}
+>
+  <h2>Ringkasan Pesanan</h2>
+
+  <p><strong>Produk:</strong> {productName}</p>
+
+  <p><strong>Harga:</strong> {productPrice}</p>
+
+  <p><strong>Berat:</strong> {productWeight} gram</p>
+</div>
 
       <input
         placeholder="Nama Penerima"
@@ -145,8 +172,12 @@ export default function CheckoutPage() {
 
       <button
         onClick={() => {
-          const message = `
+    const message = `
 Pesanan SATUJAM.ID
+
+Produk: ${productName}
+Harga: ${productPrice}
+Berat: ${productWeight} gram
 
 Nama: ${name}
 WhatsApp: ${phone}

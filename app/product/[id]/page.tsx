@@ -102,15 +102,17 @@ export default async function ProductDetail({
           >
             {product.price}
           </h2>
+{product.gender && (
+  <p
+    style={{
+      marginBottom: "10px",
+    }}
+  >
+    Gender: {product.gender}
+  </p>
+)}
 
-          {product.gender && (
-            <p
-              style={{
-                marginBottom: "10px",
-              }}
-            >
-              Gender: {product.gender}
-              {product.weight && (
+{product.weight && (
   <p
     style={{
       marginBottom: "10px",
@@ -119,25 +121,23 @@ export default async function ProductDetail({
     Berat: {product.weight} gram
   </p>
 )}
-            </p>
-          )}
 
-          {product.stock && (
-            <p
-              style={{
-                marginBottom: "20px",
-                color:
-                  product.stock === "Ready Stock"
-                    ? "#00ff66"
-                    : product.stock === "Pre Order"
-                    ? "#ffaa00"
-                    : "#ff4444",
-              }}
-            >
-              {product.stock}
-            </p>
-          )}
-
+{product.stock && (
+  <p
+    style={{
+      marginBottom: "20px",
+      color:
+        product.stock === "Ready Stock"
+          ? "#00ff66"
+          : product.stock === "Pre Order"
+          ? "#ffaa00"
+          : "#ff4444",
+    }}
+  >
+    {product.stock}
+  </p>
+)}
+          
           <p
             style={{
               lineHeight: "1.8",
