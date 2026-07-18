@@ -1,14 +1,14 @@
 "use client";
 
-
+import { supabase } from "../lib/supabase";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { products as defaultProducts } from "./data/products";
+
 import BannerSlider from "./components/BannerSlider";
 import WhatsappPopup from "./components/WhatsappPopup";
 export default function Home() {
-  const [products, setProducts] =
-      useState(defaultProducts);
+ const [products, setProducts] =
+  useState<any[]>([]);
       
         const [selectedBrand, setSelectedBrand] =
             useState("Semua");
@@ -23,33 +23,39 @@ export default function Home() {
     localStorage.getItem("brands")
   );
 }, []);
-  
-                    
-                       useEffect(() => {
-  const savedProducts = JSON.parse(
-    localStorage.getItem("products") || "[]"
-  );
-
-  if (savedProducts.length > 0) {
-    setProducts([
-      ...defaultProducts,
-      ...savedProducts,
-    ]);
-  }
-
-  const savedBrands = JSON.parse(
-    localStorage.getItem("brands") || "[]"
-  );
-
-  if (savedBrands.length > 0) {
-    setBrands([
-      "Semua",
-      ...savedBrands,
-    ]);
-  }
+  useEffect(() => {
+  loadProducts();
 }, []);
-   
 
+async function loadProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("id", {
+      ascending: false,
+    });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setProducts(data || []);
+
+ const uniqueBrands = [
+  "Semua",
+  ...new Set(
+    (data || [])
+      .map((p) => p.brand)
+      .filter(Boolean)
+  ),
+];
+
+
+
+  setBrands(uniqueBrands);
+}
+                    
 
   const filteredProducts = products.filter(
     (product: any) => {
@@ -203,7 +209,7 @@ const randomProducts =
                   "hidden",
               }}
             >
-              <img
+            <img
   src={
     product.image &&
     product.image.trim() !== ""
@@ -211,12 +217,13 @@ const randomProducts =
       : "/no-image.png"
   }
   alt={product.name}
-                style={{
-                  width: "100%",
-                  height: "320px",
-                  objectFit: "cover",
-                }}
-              />
+  style={{
+    width: "100%",
+    height: "320px",
+    objectFit: "contain",
+    background: "#111",
+  }}
+/>
 
               <div
                 style={{

@@ -1,403 +1,268 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { supabase } from "../../lib/supabase";
 
 type Product = {
   id: number;
   brand: string;
   name: string;
-  weight: string;
   price: string;
   gender: string;
+  weight: string;
   stock: string;
   image: string;
   description: string;
 };
 
 export default function AdminPage() {
-  const ADMIN_PIN = "123456";
-
-  const [authorized, setAuthorized] = useState(false);
-  const [pin, setPin] = useState("");
-  const [brand, setBrand] = useState("");
-
-const [brands, setBrands] = useState([
-  "Rolex",
-  "Seiko",
-  "Casio",
-  "Bonia",
-]);
-
-const [newBrand, setNewBrand] =
-  useState("");
-
- 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [brand, setBrand] = useState("Rolex");
   const [gender, setGender] = useState("Male");
   const [weight, setWeight] = useState("1000");
   const [stock, setStock] = useState("Ready Stock");
-  const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const loggedIn =
-      localStorage.getItem("adminLoggedIn");
-const loginTime = Number(
-  localStorage.getItem(
-    "adminLoginTime"
-  )
-);
-
-const now = Date.now();
-
-const twoHours =
-  2 * 60 * 60 * 1000;
-
-if (
-  loggedIn === "true" &&
-  now - loginTime < twoHours
-) {
-  setAuthorized(true);
-}
-   
-
-    const saved = JSON.parse(
-      localStorage.getItem("products") || "[]"
-    );
-
-    setProducts(saved);
-   const savedBrands = JSON.parse(
-  localStorage.getItem("brands") || "[]"
-);
-
-if (savedBrands.length > 0) {
-  setBrands(savedBrands);
-}
-
-
+    loadProducts();
   }, []);
 
-  const saveProduct = () => {
-    const newProduct: Product = {
-      id: Date.now(),
-      brand,
-      name,
-      price,
-      weight,
-      gender,
-      stock,
-      image,
-      description,
-      
-    };
-    if (
-  !name ||
-  !price ||
-  !image
-) {
-  alert(
-    "Nama, harga dan gambar wajib diisi"
-  );
-  return;
-}
+  async function loadProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("id", { ascending: false });
 
-    const updated = [...products, newProduct];
+    if (!error) {
+      setProducts(data || []);
+    }
+  }
 
-    localStorage.setItem(
-      "products",
-      JSON.stringify(updated)
-    );
+ const uploadImage = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
 
-    setProducts(updated);
+  if (!file) {
+    alert("File tidak dipilih");
+    return;
+  }
+
+  console.log("FILE:", file);
+
+  const fileName = `${Date.now()}-${file.name}`;
+
+  const { data, error } = await supabase.storage
+    .from("products")
+    .upload(fileName, file);
+
+  console.log("UPLOAD DATA:", data);
+  console.log("UPLOAD ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("products")
+    .getPublicUrl(fileName);
+
+  console.log("PUBLIC URL:", urlData.publicUrl);
+
+  setImage(urlData.publicUrl);
+};
+
+
+  const saveProduct = async () => {
+    if (!name || !price || !image) {
+      alert("Nama, Harga dan Gambar wajib diisi");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("products")
+      .insert([
+        {
+          brand,
+          name,
+          price,
+          gender,
+          weight,
+          stock,
+          image,
+          description,
+        },
+      ]);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Produk berhasil disimpan");
 
     setName("");
     setPrice("");
     setImage("");
-    setDescription("");
 
-    alert("Produk berhasil disimpan");
+    loadProducts();
   };
 
-  const deleteProduct = (id: number) => {
-    const updated = products.filter(
-      (p) => p.id !== id
-    );
+  const deleteProduct = async (id: number) => {
+    await supabase
+      .from("products")
+      .delete()
+      .eq("id", id);
 
-    localStorage.setItem(
-      "products",
-      JSON.stringify(updated)
-    );
-
-    setProducts(updated);
+    loadProducts();
   };
 
-  if (!authorized) {
-    return (
-      <main
+  return (
+     <main
+      style={{
+        padding: 30,
+        maxWidth: 1200,
+        margin: "0 auto",
+      }}
+    >
+      <h1>ADMIN SATUJAM.ID</h1>
+
+      <div
         style={{
-          minHeight: "100vh",
-          background: "#000",
-          color: "#fff",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: "grid",
+          gap: 15,
+          marginTop: 20,
+          marginBottom: 40,
         }}
       >
+        <select
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+        >
+          <option>Rolex</option>
+          <option>Seiko</option>
+          <option>Casio</option>
+          <option>Bonia</option>
+          <option>Alexandre Christie</option>
+        </select>
+
+        <input
+          placeholder="Nama Produk"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          placeholder="Harga"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
+        <select
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+        >
+          <option>Male</option>
+          <option>Female</option>
+          <option>Unisex</option>
+        </select>
+
+        <input
+          type="number"
+          placeholder="Berat"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+        />
+
+        <select
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+        >
+          <option>Ready Stock</option>
+          <option>Pre Order</option>
+          <option>Sold Out</option>
+        </select>
+
+        <textarea
+          rows={5}
+          placeholder="Deskripsi"
+          value={description}
+          onChange={(e) =>
+            setDescription(e.target.value)
+          }
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={uploadImage}
+        />
+
+        {image && (
+          <img
+            src={image}
+            alt="Preview"
+            style={{
+              width: 180,
+              borderRadius: 10,
+            }}
+          />
+        )}
+
+        <button onClick={saveProduct}>
+          SIMPAN PRODUK
+        </button>
+      </div>
+
+      <h2>Daftar Produk</h2>
+
+      {products.map((product) => (
         <div
+          key={product.id}
           style={{
-            background: "#111",
-            padding: "40px",
-            borderRadius: "20px",
-            width: "380px",
+            border: "1px solid #ddd",
+            borderRadius: 10,
+            padding: 15,
+            marginBottom: 20,
           }}
         >
-          <h1>ADMIN LOGIN</h1>
-
-          <input
-            type="password"
-            placeholder="Masukkan PIN"
-            value={pin}
-            onChange={(e) =>
-              setPin(e.target.value)
-            }
+          <img
+            src={product.image}
+            alt={product.name}
             style={{
-              width: "100%",
-              padding: "15px",
-              marginBottom: "15px",
+              width: 120,
+              marginBottom: 10,
             }}
           />
 
-          <button
-            onClick={() => {
-              if (pin === ADMIN_PIN) {
-                localStorage.setItem(
-                  "adminLoggedIn",
-                  "true"
-                );
-                localStorage.setItem(
-  "adminLoginTime",
-  Date.now().toString()
-);
+          <h3>
+            {product.brand} - {product.name}
+          </h3>
 
-                setAuthorized(true);
-              } else {
-                alert("PIN Salah");
-              }
-            }}
-            style={{
-              width: "100%",
-              padding: "15px",
-            }}
-          >
-            MASUK
-          </button>
-        </div>
-      </main>
-    );
-  }
+          <p>Harga : {product.price}</p>
 
-  return (
-    <main
-      style={{
-        background: "#000",
-        color: "#fff",
-        minHeight: "100vh",
-        padding: "40px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h1>ADMIN SATUJAM.ID</h1>
+          <p>Gender : {product.gender}</p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-          }}
-        >
-          <Link href="/seiko88/banner">
-            <button>
-              KELOLA BANNER
-            </button>
-          </Link>
+          <p>Berat : {product.weight} gram</p>
+
+          <p>Stock : {product.stock}</p>
+
+          <p>{product.description}</p>
 
           <button
-            onClick={() => {
-              localStorage.removeItem(
-                "adminLoggedIn"
-              );
-
-              location.reload();
-            }}
+            onClick={() =>
+              deleteProduct(product.id)
+            }
           >
-            LOGOUT
+            HAPUS
           </button>
         </div>
-      </div>
-
-      <div
-        style={{
-          background: "#111",
-          padding: "20px",
-          borderRadius: "15px",
-        }}
-        >
-          <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-  }}
->
-          <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  }}
-></div>
-     <select
-  value={brand}
-  onChange={(e) => setBrand(e.target.value)}
->
-  {brands.map((item) => (
-    <option
-      key={item}
-      value={item}
-    >
-      {item}
-    </option>
-  ))}
-</select>
-
-<input
-  type="text"
-  placeholder="Nama Produk"
-  value={name}
-  onChange={(e) => setName(e.target.value)}
-/>
-
-<input
-  type="text"
-  placeholder="Harga Produk"
-  value={price}
-  onChange={(e) => setPrice(e.target.value)}
-/>
-
-<select
-  value={gender}
-  onChange={(e) => setGender(e.target.value)}
->
-  <option>Male</option>
-  <option>Female</option>
-  <option>Unisex</option>
-</select>
-
-<select
-  value={stock}
-  onChange={(e) => setStock(e.target.value)}
->
-  <option>Ready Stock</option>
-  <option>Pre Order</option>
-  <option>Sold Out</option>
-</select>
-
-<input
-  type="number"
-  placeholder="Berat Produk (gram)"
-  value={weight}
-  onChange={(e) => setWeight(e.target.value)}
-/>
-
-<input
-  type="file"
-  accept="image/*"
-/>
-
-<textarea
-  placeholder="Deskripsi Produk"
-  value={description}
-  onChange={(e) =>
-    setDescription(e.target.value)
-  }
-/>
-
-<button
-  onClick={saveProduct}
->
-  SIMPAN PRODUK
-</button>
-</div>
-
-
-      <h2
-        style={{
-          marginTop: "30px",
-        }}
-      >
-        Produk Tersimpan
-      </h2>
-
-      <input
-        placeholder="Cari Produk"
-        value={search}
-        onChange={(e) =>
-          setSearch(e.target.value)
-        }
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "20px",
-          fontSize: "24px",
-        }}
-      />
-
-      {products
-        .filter((p) =>
-          p.name
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        )
-        .map((product) => (
-          <div
-            key={product.id}
-            style={{
-              background: "#111",
-              padding: "20px",
-              borderRadius: "15px",
-              marginBottom: "15px",
-              fontSize: "20px",
-            }}
-          >
-            <strong>
-              {product.brand} - {product.name}
-            </strong>
-
-  <p>{product.price}</p>
-
-      <button
-        onClick={() =>
-          deleteProduct(product.id)
-        }
-      >
-        HAPUS
-      </button>
-    </div>
-  ))}
-
-</div>
-
-</main>
-);
+      ))}
+    </main>
+  );
 }
