@@ -92,7 +92,9 @@ const randomProducts =
           marginBottom: "30px",
         }}
       >
-        <h1>SATUJAM.ID</h1>
+       <h1 style={{ color: "red" }}>
+  TEST HOSTINGER 123
+</h1>
         </div>
         
 
