@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 type Banner = {
   title: string;
@@ -16,54 +17,71 @@ export default function BannerPage() {
   const [banners, setBanners] = useState<Banner[]>([]);
 
   useEffect(() => {
-    const saved = JSON.parse(
-      localStorage.getItem("homepageBanners") || "[]"
-    );
+  loadBanners();
+}, []);
 
-    setBanners(saved);
-  }, []);
+async function loadBanners() {
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .order("id", { ascending: false });
 
-  const saveBanner = () => {
-    if (!title || !image) {
-      alert("Judul dan gambar wajib diisi");
-      return;
-    }
+  if (error) {
+    console.error(error);
+    return;
+  }
 
-    const updated = [
-      ...banners,
+  setBanners(data || []);
+}
+
+ const saveBanner = async () => {
+  if (!title || !image) {
+    alert("Judul dan gambar wajib diisi");
+    return;
+  }
+
+const { data, error } = await supabase
+    .from("banners")
+    .insert([
       {
         title,
         subtitle,
         image,
       },
-    ];
+   
+    ]);
+    console.log("DATA:", data);
+console.log("ERROR:", error);
 
-    localStorage.setItem(
-      "homepageBanners",
-      JSON.stringify(updated)
-    );
+  if (error) {
+    console.error(error);
+    alert("Gagal menyimpan banner");
+    return;
+  }
 
-    setBanners(updated);
+  alert("Banner berhasil ditambahkan");
 
-    setTitle("");
-    setSubtitle("");
-    setImage("");
+  setTitle("");
+  setSubtitle("");
+  setImage("");
 
-    alert("Banner berhasil ditambahkan");
-  };
+  loadBanners();
+};
 
-  const deleteBanner = (index: number) => {
-    const updated = banners.filter(
-      (_, i) => i !== index
-    );
+  const deleteBanner = async (id: number) => {
+  const { error } = await supabase
+    .from("banners")
+    .delete()
+    .eq("id", id);
 
-    localStorage.setItem(
-      "homepageBanners",
-      JSON.stringify(updated)
-    );
+  if (error) {
+    console.error(error);
+    alert("Gagal menghapus banner");
+    return;
+  }
 
-    setBanners(updated);
-  };
+  loadBanners();
+};
 
   return (
     <main
@@ -250,9 +268,9 @@ export default function BannerPage() {
           <p>{banner.subtitle}</p>
 
           <button
-            onClick={() =>
-              deleteBanner(index)
-            }
+          onClick={() =>
+  deleteBanner(banner.id)
+}
             style={{
               padding: "10px 20px",
               borderRadius: "10px",

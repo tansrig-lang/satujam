@@ -1,27 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 type Banner = {
+  id: number;
   title: string;
   subtitle: string;
   image: string;
 };
 
+"use client";
+
 export default function BannerSlider() {
-  const [banners, setBanners] = useState<Banner[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  return (
+    <div
+      style={{
+        height: "600px",
+        background: "red",
+        color: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontSize: "50px",
+        fontWeight: "bold",
+      }}
+    >
+      TEST BANNER BARU
+    </div>
+  );
+}
 
-  useEffect(() => {
-    const saved = localStorage.getItem(
-      "homepageBanners"
-    );
+   
+async function loadBanners() {
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .order("id", { ascending: false });
 
-    if (saved) {
-      setBanners(JSON.parse(saved));
-    }
-  }, []);
+  console.log("BANNERS:", data);
+  console.log("ERROR:", error);
 
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setBanners(data || []);
+}
+
+useEffect(() => {
+  loadBanners();
+}, []);
   useEffect(() => {
     if (banners.length <= 1) return;
 

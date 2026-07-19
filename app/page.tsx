@@ -1,8 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { supabase } from "../lib/supabase";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 import BannerSlider from "./components/BannerSlider";
