@@ -256,8 +256,9 @@ export default function AdminPage() {
           />
         )}
 
-        <button onClick={saveProduct}>
-          style={{
+        <button
+  onClick={saveProduct}
+  style={{
     padding: "15px",
     background: "#d4af37",
     color: "#000",
@@ -266,8 +267,9 @@ export default function AdminPage() {
     fontWeight: "bold",
     cursor: "pointer",
   }}
-          SIMPAN PRODUK
-        </button>
+>
+  SIMPAN PRODUK
+</button>
       </div>
 
       <h2>Daftar Produk</h2>
