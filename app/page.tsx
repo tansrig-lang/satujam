@@ -92,10 +92,34 @@ const randomProducts =
           marginBottom: "30px",
         }}
       >
-       <h1 style={{ color: "red" }}>
-  TEST HOSTINGER 123
-</h1>
-        </div>
+<div
+  style={{
+    textAlign: "center",
+    margin: "30px 0",
+  }}
+>
+  <h1
+    style={{
+      color: "#fff",
+      fontSize: "48px",
+      fontWeight: "bold",
+      letterSpacing: "3px",
+      margin: 0,
+    }}
+  >
+    SATUJAM.ONLINE
+  </h1>
+
+  <p
+    style={{
+      color: "#bbb",
+      fontSize: "18px",
+      marginTop: "10px",
+    }}
+  >
+    Luxury Watch Store
+  </p>
+</div>
         
 
         
