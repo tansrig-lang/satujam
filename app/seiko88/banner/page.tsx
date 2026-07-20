@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
+
 type Banner = {
+   id: number;
   title: string;
   subtitle: string;
   image: string;
