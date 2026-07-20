@@ -99,16 +99,18 @@ export default function Home() {
           }}
         >
           <h1
-            style={{
-              color: "#fff",
-              fontSize: "48px",
-              fontWeight: "bold",
-              letterSpacing: "3px",
-              margin: 0,
-            }}
-          >
-            SATUJAM.ONLINE
-          </h1>
+  style={{
+    color: "#fff",
+    fontSize: "clamp(28px, 7vw, 48px)",
+    fontWeight: "bold",
+    letterSpacing: "2px",
+    margin: 0,
+    textAlign: "center",
+    wordBreak: "break-word",
+  }}
+>
+  SATUJAM.ONLINE
+</h1>
 
           <p
             style={{
