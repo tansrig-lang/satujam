@@ -8,55 +8,55 @@ import { useEffect, useState } from "react";
 import BannerSlider from "./components/BannerSlider";
 import WhatsappPopup from "./components/WhatsappPopup";
 export default function Home() {
- const [products, setProducts] =
-  useState<any[]>([]);
-      
-        const [selectedBrand, setSelectedBrand] =
-            useState("Semua");
-            
-              const [selectedGender, setSelectedGender] =
-                  useState("Semua");
-                  const [brands, setBrands] =
-  useState<string[]>(["Semua"]);
-  useEffect(() => {
-  console.log(
-    "Homepage brands:",
-    localStorage.getItem("brands")
-  );
-}, []);
-  useEffect(() => {
-  loadProducts();
-}, []);
+  const [products, setProducts] =
+    useState<any[]>([]);
 
-async function loadProducts() {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("id", {
-      ascending: false,
-    });
+  const [selectedBrand, setSelectedBrand] =
+    useState("Semua");
 
-  if (error) {
-    console.log(error);
-    return;
+  const [selectedGender, setSelectedGender] =
+    useState("Semua");
+  const [brands, setBrands] =
+    useState<string[]>(["Semua"]);
+  useEffect(() => {
+    console.log(
+      "Homepage brands:",
+      localStorage.getItem("brands")
+    );
+  }, []);
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  async function loadProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("id", {
+        ascending: false,
+      });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setProducts(data || []);
+
+    const uniqueBrands = [
+      "Semua",
+      ...new Set(
+        (data || [])
+          .map((p) => p.brand)
+          .filter(Boolean)
+      ),
+    ];
+
+
+
+    setBrands(uniqueBrands);
   }
 
-  setProducts(data || []);
-
- const uniqueBrands = [
-  "Semua",
-  ...new Set(
-    (data || [])
-      .map((p) => p.brand)
-      .filter(Boolean)
-  ),
-];
-
-
-
-  setBrands(uniqueBrands);
-}
-                    
 
   const filteredProducts = products.filter(
     (product: any) => {
@@ -71,9 +71,9 @@ async function loadProducts() {
       return brandMatch && genderMatch;
     }
   );
-const randomProducts =
-  filteredProducts.slice(0, 20);
- 
+  const randomProducts =
+    filteredProducts.slice(0, 20);
+
   return (
     <main
       style={{
@@ -92,230 +92,231 @@ const randomProducts =
           marginBottom: "30px",
         }}
       >
-<div
-  style={{
-    textAlign: "center",
-    margin: "30px 0",
-  }}
->
-  <h1
-    style={{
-      color: "#fff",
-      fontSize: "48px",
-      fontWeight: "bold",
-      letterSpacing: "3px",
-      margin: 0,
-    }}
-  >
-    SATUJAM.ONLINE
-  </h1>
-
-  <p
-    style={{
-      color: "#bbb",
-      fontSize: "18px",
-      marginTop: "10px",
-    }}
-  >
-    Luxury Watch Store
-  </p>
-</div>
-        
-
-        
-          
-
-      <BannerSlider />
-
-      <p
-        style={{
-          color: "#aaa",
-          marginBottom: "30px",
-          fontSize: "18px",
-        }}
-      >
-        Produk
-      </p>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          marginBottom: "30px",
-          flexWrap: "wrap",
-        }}
-      >
-        <select
-          value={selectedBrand}
-          onChange={(e) =>
-            setSelectedBrand(
-              e.target.value
-            )
-          }
+        <div
           style={{
-            padding: "12px",
-            borderRadius: "10px",
+            textAlign: "center",
+            margin: "30px 0",
           }}
         >
-          {brands.map((brand, index) => (
+          <h1
+            style={{
+              color: "#fff",
+              fontSize: "48px",
+              fontWeight: "bold",
+              letterSpacing: "3px",
+              margin: 0,
+            }}
+          >
+            SATUJAM.ONLINE
+          </h1>
 
-  <option
-    key={`${brand}-${index}`}
-    value={brand}
-  >
-    {brand}
-  </option>
+          <p
+            style={{
+              color: "#bbb",
+              fontSize: "18px",
+              marginTop: "10px",
+            }}
+          >
+            Luxury Watch Store
+          </p>
+        </div>
+         </div>
 
-))}
 
-         
 
-          
 
-        </select>
 
-        <select
-          value={selectedGender}
-          onChange={(e) =>
-            setSelectedGender(
-              e.target.value
-            )
-          }
+        <BannerSlider />
+
+        <p
           style={{
-            padding: "12px",
-            borderRadius: "10px",
+            color: "#aaa",
+            marginBottom: "30px",
+            fontSize: "18px",
           }}
         >
-          <option value="Semua">
-            Semua Gender
-          </option>
+          Produk
+        </p>
 
-          <option value="Male">
-            Male
-          </option>
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            marginBottom: "30px",
+            flexWrap: "wrap",
+          }}
+        >
+          <select
+            value={selectedBrand}
+            onChange={(e) =>
+              setSelectedBrand(
+                e.target.value
+              )
+            }
+            style={{
+              padding: "12px",
+              borderRadius: "10px",
+            }}
+          >
+            {brands.map((brand, index) => (
 
-          <option value="Female">
-            Female
-          </option>
+              <option
+                key={`${brand}-${index}`}
+                value={brand}
+              >
+                {brand}
+              </option>
 
-          <option value="Unisex">
-            Unisex
-          </option>
-        </select>
-      </div>
+            ))}
 
-      <h2
-        style={{
-          marginBottom: "20px",
-        }}
-      >
-        {filteredProducts.length} Produk
-      </h2>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "25px",
-        }}
-      >
-        {randomProducts.map(
-          (
-            product: any,
-            index
-          ) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor:
-                  "#111",
-                borderRadius:
-                  "20px",
-                overflow:
-                  "hidden",
-              }}
-            >
-            <img
-  src={
-    product.image &&
-    product.image.trim() !== ""
-      ? product.image
-      : "/no-image.png"
-  }
-  alt={product.name}
-  style={{
-    width: "100%",
-    height: "320px",
-    objectFit: "contain",
-    background: "#111",
-  }}
-/>
 
+
+
+          </select>
+
+          <select
+            value={selectedGender}
+            onChange={(e) =>
+              setSelectedGender(
+                e.target.value
+              )
+            }
+            style={{
+              padding: "12px",
+              borderRadius: "10px",
+            }}
+          >
+            <option value="Semua">
+              Semua Gender
+            </option>
+
+            <option value="Male">
+              Male
+            </option>
+
+            <option value="Female">
+              Female
+            </option>
+
+            <option value="Unisex">
+              Unisex
+            </option>
+          </select>
+        </div>
+
+        <h2
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          {filteredProducts.length} Produk
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "25px",
+          }}
+        >
+          {randomProducts.map(
+            (
+              product: any,
+              index
+            ) => (
               <div
+                key={index}
                 style={{
-                  padding: "20px",
+                  backgroundColor:
+                    "#111",
+                  borderRadius:
+                    "20px",
+                  overflow:
+                    "hidden",
                 }}
               >
-                <h3
+                <img
+                  src={
+                    product.image &&
+                      product.image.trim() !== ""
+                      ? product.image
+                      : "/no-image.png"
+                  }
+                  alt={product.name}
                   style={{
-                    color: "#FFD700",
-                    marginBottom: "5px",
+                    width: "100%",
+                    height: "320px",
+                    objectFit: "contain",
+                    background: "#111",
+                  }}
+                />
+
+                <div
+                  style={{
+                    padding: "20px",
                   }}
                 >
-                  {product.brand}
-                </h3>
+                  <h3
+                    style={{
+                      color: "#FFD700",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {product.brand}
+                  </h3>
 
-                <h2>{product.name}</h2>
+                  <h2>{product.name}</h2>
 
-                <p
-                  style={{
-                    color: "#aaa",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {product.price}
-                </p>
+                  <p
+                    style={{
+                      color: "#aaa",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    {product.price}
+                  </p>
 
-                <p
-                  style={{
-                    color: "#888",
-                    marginBottom: "20px",
-                  }}
-                >
-                  {product.gender}
-                </p>
-                <Link href="/checkout">
-  <button
-    onClick={() => {
-      localStorage.setItem(
-        "selectedProduct",
-        JSON.stringify({
-          name: product.name,
-          price: product.price,
-        })
-      );
-    }}
-    style={{
-      width: "100%",
-      padding: "14px",
-      borderRadius: "12px",
-      border: "none",
-      cursor: "pointer",
-      fontWeight: "bold",
-    }}
-  >
-    BELI SEKARANG
-  </button>
-</Link>
+                  <p
+                    style={{
+                      color: "#888",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {product.gender}
+                  </p>
+                  <Link href="/checkout">
+                    <button
+                      onClick={() => {
+                        localStorage.setItem(
+                          "selectedProduct",
+                          JSON.stringify({
+                            name: product.name,
+                            price: product.price,
+                          })
+                        );
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "14px",
+                        borderRadius: "12px",
+                        border: "none",
+                        cursor: "pointer",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      BELI SEKARANG
+                    </button>
+                  </Link>
 
-             
+
+                </div>
               </div>
-            </div>
-          )
-        )}
-      </div>
-      <WhatsappPopup />
+            )
+          )}
+        </div>
+        <WhatsappPopup />
     </main>
   );
 }
