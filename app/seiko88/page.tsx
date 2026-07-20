@@ -122,11 +122,18 @@ export default function AdminPage() {
     loadProducts();
   };
 
-  return (
-     <main
+ return (
+  <main
+    style={{
+      minHeight: "100vh",
+      background: "#000",
+      color: "#fff",
+      padding: "30px",
+    }}
+  >
+    <div
       style={{
-        padding: 30,
-        maxWidth: 1200,
+        maxWidth: "1200px",
         margin: "0 auto",
       }}
     >
@@ -155,17 +162,38 @@ export default function AdminPage() {
           placeholder="Nama Produk"
           value={name}
           onChange={(e) => setName(e.target.value)}
+           style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
         />
 
         <input
           placeholder="Harga"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+           style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
         />
 
         <select
           value={gender}
           onChange={(e) => setGender(e.target.value)}
+           style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
         >
           <option>Male</option>
           <option>Female</option>
@@ -177,11 +205,25 @@ export default function AdminPage() {
           placeholder="Berat"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
+           style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
         />
 
         <select
           value={stock}
           onChange={(e) => setStock(e.target.value)}
+           style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
         >
           <option>Ready Stock</option>
           <option>Pre Order</option>
@@ -215,6 +257,15 @@ export default function AdminPage() {
         )}
 
         <button onClick={saveProduct}>
+          style={{
+    padding: "15px",
+    background: "#d4af37",
+    color: "#000",
+    border: "none",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
           SIMPAN PRODUK
         </button>
       </div>
@@ -263,6 +314,7 @@ export default function AdminPage() {
           </button>
         </div>
       ))}
+      </div>
     </main>
   );
 }
