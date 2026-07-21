@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from "@/lib/supabase";
 
 import { useEffect, useState } from "react";
 
@@ -10,56 +11,72 @@ const [authorized, setAuthorized] =
 
 const [pin, setPin] = useState("");
 
-  const [brands, setBrands] = useState<string[]>([]);
+ type Brand = {
+  id: number;
+  name: string;
+};
+
+const [brands, setBrands] = useState<Brand[]>([]);
   const [newBrand, setNewBrand] = useState("");
+async function loadBrands() {
+  const { data, error } = await supabase
+    .from("brands")
+    .select("*")
+    .order("name");
 
-  useEffect(() => {
-    const savedBrands = JSON.parse(
-      localStorage.getItem("brands") || "[]"
-    );
-    const loggedIn =
-  localStorage.getItem("adminLoggedIn");
+  if (error) {
+    console.error(error);
+    return;
+  }
 
-if (loggedIn === "true") {
-  setAuthorized(true);
+  setBrands(data || []);
+}
+useEffect(() => {
+  const loggedIn = localStorage.getItem("adminLoggedIn");
+
+  if (loggedIn === "true") {
+    setAuthorized(true);
+  }
+
+  loadBrands();
+}, []);
+
+  
+
+  async function addBrand() {
+  if (!newBrand.trim()) return;
+
+  const { error } = await supabase
+    .from("brands")
+    .insert([{ name: newBrand.trim() }]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setNewBrand("");
+loadBrands();
 }
 
-    if (savedBrands.length > 0) {
-      setBrands(savedBrands);
-    }
-  }, []);
 
-  const addBrand = () => {
-    if (!newBrand.trim()) return;
 
-    const updated = [
-      ...brands,
-      newBrand.trim(),
-    ];
+async function deleteBrand(id: number) {
+  const { error } = await supabase
+    .from("brands")
+    .delete()
+    .eq("id", id);
 
-    localStorage.setItem(
-      "brands",
-      JSON.stringify(updated)
-    );
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
-    setBrands(updated);
-    setNewBrand("");
-  };
+  loadBrands();
+}
 
-  const deleteBrand = (
-    brandToDelete: string
-  ) => {
-    const updated = brands.filter(
-      (brand) => brand !== brandToDelete
-    );
 
-    localStorage.setItem(
-      "brands",
-      JSON.stringify(updated)
-    );
-
-    setBrands(updated);
-  };
+  
   if (!authorized) {
   return (
     <main
@@ -153,32 +170,28 @@ if (loggedIn === "true") {
       >
         Daftar Merek
       </h2>
+{brands.map((brand) => (
+  <div
+    key={brand.id}
+    style={{
+      background: "#111",
+      padding: "15px",
+      marginBottom: "10px",
+      borderRadius: "10px",
+      display: "flex",
+      justifyContent: "space-between",
+    }}
+  >
+    <span>{brand.name}</span>
 
-      {brands.map((brand, index) => (
-        <div
-          key={`${brand}-${index}`}
-
-          style={{
-            background: "#111",
-            padding: "15px",
-            marginBottom: "10px",
-            borderRadius: "10px",
-            display: "flex",
-            justifyContent:
-              "space-between",
-          }}
-        >
-          <span>{brand}</span>
-
-          <button
-            onClick={() =>
-              deleteBrand(brand)
-            }
-          >
-            HAPUS
-          </button>
-        </div>
-      ))}
+    <button
+      onClick={() => deleteBrand(brand.id)}
+    >
+      HAPUS
+    </button>
+  </div>
+))}
+       
     </main>
   );
 }

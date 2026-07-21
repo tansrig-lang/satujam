@@ -19,6 +19,24 @@ export default function AdminPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("Rolex");
+  type Brand = {
+  id: number;
+  name: string;
+};
+async function loadBrands() {
+  const { data, error } = await supabase
+    .from("brands")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setBrands(data || []);
+}
+const [brands, setBrands] = useState<Brand[]>([]);
   const [gender, setGender] = useState("Male");
   const [weight, setWeight] = useState("1000");
   const [stock, setStock] = useState("Ready Stock");
@@ -28,6 +46,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+  loadBrands();
     loadProducts();
   }, []);
 
@@ -158,11 +177,11 @@ export default function AdminPage() {
     borderRadius: "10px",
   }}
 >
-  <option>Rolex</option>
-  <option>Seiko</option>
-  <option>Casio</option>
-  <option>Bonia</option>
-  <option>Alexandre Christie</option>
+  {brands.map((item) => (
+    <option key={item.id} value={item.name}>
+      {item.name}
+    </option>
+  ))}
 </select>
 
 
