@@ -45,6 +45,7 @@ async function loadBrands() {
 }
  
 const [brands, setBrands] = useState<Brand[]>([]);
+const [newBrand, setNewBrand] = useState("");
   const [gender, setGender] = useState("Male");
   const [weight, setWeight] = useState("1000");
   const [stock, setStock] = useState("Ready Stock");
@@ -103,6 +104,27 @@ const [brands, setBrands] = useState<Brand[]>([]);
 
   setImage(urlData.publicUrl);
 };
+async function addBrand() {
+  if (!newBrand.trim()) {
+    alert("Masukkan nama merek");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("brands")
+    .insert([{ name: newBrand.trim() }]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Merek berhasil ditambahkan");
+
+  setNewBrand("");
+
+  loadBrands();
+}
 
 
   const saveProduct = async () => {
@@ -185,6 +207,34 @@ const [brands, setBrands] = useState<Brand[]>([]);
           marginBottom: 40,
         }}
       >
+        <input
+  type="text"
+  placeholder="Tambah Merek Baru"
+  value={newBrand}
+  onChange={(e) => setNewBrand(e.target.value)}
+  style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
+/>
+
+<button
+  onClick={addBrand}
+  style={{
+    padding: "12px",
+    background: "#0ea5e9",
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  TAMBAH MEREK
+</button>
       <select
   value={brand}
   onChange={(e) => setBrand(e.target.value)}
