@@ -165,7 +165,7 @@ console.log("ERROR:", error);
 <input
   type="file"
   accept="image/*"
-  capture="environment"
+  
   onChange={async (e) => {
     const file = e.target.files?.[0];
 
