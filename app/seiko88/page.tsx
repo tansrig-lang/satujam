@@ -29,13 +29,21 @@ async function loadBrands() {
     .select("*")
     .order("name");
 
+  console.log("BRANDS DATA =", data);
+  console.log("BRANDS ERROR =", error);
+
   if (error) {
-    console.error(error);
+    alert(error.message);
     return;
   }
 
   setBrands(data || []);
+
+  if (data && data.length > 0) {
+    setBrand(data[0].name);
+  }
 }
+ 
 const [brands, setBrands] = useState<Brand[]>([]);
   const [gender, setGender] = useState("Male");
   const [weight, setWeight] = useState("1000");
