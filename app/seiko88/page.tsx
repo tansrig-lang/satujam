@@ -150,13 +150,17 @@ export default function AdminPage() {
        <select
   value={brand}
   onChange={(e) => setBrand(e.target.value)}
+<select
+  value={brand}
+  onChange={(e) => setBrand(e.target.value)}
 >
-  {brands.map((item) => (
-    <option key={item.id} value={item.name}>
-      {item.name}
-    </option>
-  ))}
+  <option>Rolex</option>
+  <option>Seiko</option>
+  <option>Casio</option>
+  <option>Bonia</option>
+  <option>Alexandre Christie</option>
 </select>
+
 
         <input
           placeholder="Nama Produk"

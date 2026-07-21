@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import BannerSlider from "./components/BannerSlider";
 import WhatsappPopup from "./components/WhatsappPopup";
 export default function Home() {
+  const [search, setSearch] = useState("");
   const [products, setProducts] =
     useState<any[]>([]);
 
@@ -59,18 +60,31 @@ export default function Home() {
 
 
   const filteredProducts = products.filter(
-    (product: any) => {
-      const brandMatch =
-        selectedBrand === "Semua" ||
-        product.brand === selectedBrand;
+  (product: any) => {
+    const brandMatch =
+      selectedBrand === "Semua" ||
+      product.brand === selectedBrand;
 
-      const genderMatch =
-        selectedGender === "Semua" ||
-        product.gender === selectedGender;
+    const genderMatch =
+      selectedGender === "Semua" ||
+      product.gender === selectedGender;
 
-      return brandMatch && genderMatch;
-    }
-  );
+    const searchMatch =
+      search === "" ||
+      product.name
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      product.brand
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+    return (
+      brandMatch &&
+      genderMatch &&
+      searchMatch
+    );
+  }
+);
   const randomProducts =
     filteredProducts.slice(0, 20);
 
@@ -123,22 +137,35 @@ export default function Home() {
           </p>
         </div>
          </div>
+<BannerSlider />
 
+<input
+  type="text"
+  placeholder="🔍 Cari nama jam tangan..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "14px",
+    marginTop: "25px",
+    marginBottom: "20px",
+    borderRadius: "10px",
+    border: "1px solid #333",
+    background: "#111",
+    color: "#fff",
+    fontSize: "16px",
+  }}
+/>
 
-
-
-
-        <BannerSlider />
-
-        <p
-          style={{
-            color: "#aaa",
-            marginBottom: "30px",
-            fontSize: "18px",
-          }}
-        >
-          Produk
-        </p>
+<p
+  style={{
+    color: "#aaa",
+    marginBottom: "30px",
+    fontSize: "18px",
+  }}
+>
+  Produk
+</p>
 
         <div
           style={{
