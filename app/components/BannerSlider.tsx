@@ -8,11 +8,14 @@ type Banner = {
   title: string;
   subtitle: string;
   image: string;
+  image_mobile: string;
 };
+  
 
 export default function BannerSlider() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   async function loadBanners() {
     const { data, error } = await supabase
@@ -31,6 +34,19 @@ export default function BannerSlider() {
   useEffect(() => {
     loadBanners();
   }, []);
+  useEffect(() => {
+  const checkScreen = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  checkScreen();
+
+  window.addEventListener("resize", checkScreen);
+
+  return () => {
+    window.removeEventListener("resize", checkScreen);
+  };
+}, []);
 
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -46,7 +62,8 @@ export default function BannerSlider() {
     return (
       <div
         style={{
-          height: "600px",
+          width: "100%",
+height: "clamp(250px, 42vw, 600px)",
           background: "#111",
           borderRadius: "25px",
           display: "flex",
@@ -66,21 +83,27 @@ export default function BannerSlider() {
     <div
       style={{
         position: "relative",
-        height: "600px",
+      width: "100%",
+height: "clamp(250px, 42vw, 600px)",
         borderRadius: "25px",
         overflow: "hidden",
         marginBottom: "40px",
       }}
     >
-      <img
-        src={banner.image}
-        alt={banner.title}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
+     <img
+  src={
+    isMobile
+      ? banner.image_mobile || banner.image
+      : banner.image
+  }
+  alt={banner.title}
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center",
+  }}
+/>
     </div>
   );
 }

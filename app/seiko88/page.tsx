@@ -133,18 +133,22 @@ const [brands, setBrands] = useState<Brand[]>([]);
   };
 
   const deleteProduct = async (id: number) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("products")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .select();
+
+  console.log("DELETE DATA:", data);
+  console.log("DELETE ERROR:", error);
 
   if (error) {
-    console.error(error);
     alert(error.message);
     return;
   }
 
   alert("Produk berhasil dihapus");
+
   loadProducts();
 };
 
