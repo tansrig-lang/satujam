@@ -147,12 +147,16 @@ export default function AdminPage() {
           marginBottom: 40,
         }}
       >
-       <select
+      <select
   value={brand}
   onChange={(e) => setBrand(e.target.value)}
-<select
-  value={brand}
-  onChange={(e) => setBrand(e.target.value)}
+  style={{
+    padding: "12px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
 >
   <option>Rolex</option>
   <option>Seiko</option>
