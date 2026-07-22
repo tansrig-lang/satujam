@@ -1,5 +1,5 @@
 "use client";
-export const revalidate = 0;
+
 import { addToCart } from "@/lib/cart";
 
 import NewProducts from "./components/NewProducts";
