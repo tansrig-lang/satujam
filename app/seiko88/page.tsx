@@ -53,6 +53,7 @@ const [newBrand, setNewBrand] = useState("");
   const [image, setImage] = useState("");
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
   loadBrands();
@@ -369,8 +370,36 @@ async function addBrand() {
       </div>
 
       <h2>Daftar Produk</h2>
+      <input
+  type="text"
+  placeholder="Cari produk..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "12px",
+    marginTop: "15px",
+    marginBottom: "20px",
+    background: "#1a1a1a",
+    color: "#fff",
+    border: "1px solid #444",
+    borderRadius: "10px",
+  }}
+/>
 
-      {products.map((product) => (
+      {products
+  .filter((product) => {
+  const keyword = search
+    .toLowerCase()
+    .replace(/[\s-]/g, "");
+
+  const text = `${product.brand}${product.name}`
+    .toLowerCase()
+    .replace(/[\s-]/g, "");
+
+  return text.includes(keyword);
+})
+  .map((product) => (
         <div
           key={product.id}
           style={{

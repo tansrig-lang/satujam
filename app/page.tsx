@@ -1,12 +1,15 @@
 "use client";
-export const dynamic = "force-dynamic";
+export const revalidate = 0;
+import { addToCart } from "@/lib/cart";
 
+import NewProducts from "./components/NewProducts";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 import BannerSlider from "./components/BannerSlider";
 import WhatsappPopup from "./components/WhatsappPopup";
+import CartIcon from "./components/CartIcon";
 export default function Home() {
   const [search, setSearch] = useState("");
   const [products, setProducts] =
@@ -19,22 +22,26 @@ export default function Home() {
     useState("Semua");
   const [brands, setBrands] =
     useState<string[]>(["Semua"]);
- 
+ const [visibleProducts, setVisibleProducts] = useState(12);
 
-  async function loadProducts() {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("id", {
-        ascending: false,
-      });
+  
+    async function loadProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("id", {
+      ascending: false,
+    });
 
-    if (error) {
-      console.log(error);
-      return;
-    }
+  console.log("PRODUCTS:", data);
+  console.log("ERROR:", error);
 
-    setProducts(data || []);
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setProducts(data || []);
 
     const uniqueBrands = [
       "Semua",
@@ -49,10 +56,37 @@ export default function Home() {
 
     setBrands(uniqueBrands);
   }
+useEffect(() => {
+  loadProducts();
 
 
-  const filteredProducts = products.filter(
-  (product: any) => {
+
+}, []);
+
+  const filteredProducts = [...products]
+  .sort((a: any, b: any) => {
+    const keyword = search
+      .toLowerCase()
+      .replace(/[\s-]/g, "");
+
+    const aText = `${a.brand}${a.name}`
+      .toLowerCase()
+      .replace(/[\s-]/g, "");
+
+    const bText = `${b.brand}${b.name}`
+      .toLowerCase()
+      .replace(/[\s-]/g, "");
+
+    const aScore = aText.indexOf(keyword);
+    const bScore = bText.indexOf(keyword);
+
+    if (aScore === -1 && bScore === -1) return 0;
+    if (aScore === -1) return 1;
+    if (bScore === -1) return -1;
+
+    return aScore - bScore;
+  })
+  .filter((product: any) => {
     const brandMatch =
       selectedBrand === "Semua" ||
       product.brand === selectedBrand;
@@ -61,22 +95,23 @@ export default function Home() {
       selectedGender === "Semua" ||
       product.gender === selectedGender;
 
+    const keyword = search
+      .toLowerCase()
+      .replace(/[\s-]/g, "");
+
+    const text = `${product.brand}${product.name}`
+      .toLowerCase()
+      .replace(/[\s-]/g, "");
+
     const searchMatch =
-      search === "" ||
-      product.name
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      product.brand
-        .toLowerCase()
-        .includes(search.toLowerCase());
+      keyword === "" || text.includes(keyword);
 
     return (
       brandMatch &&
       genderMatch &&
       searchMatch
     );
-  }
-);
+  });
   const randomProducts =
     filteredProducts.slice(0, 20);
 
@@ -128,8 +163,10 @@ export default function Home() {
             Luxury Watch Store
           </p>
         </div>
+        <CartIcon />
          </div>
 <BannerSlider />
+<NewProducts products={products} />
 
 <input
   type="text"
@@ -242,7 +279,9 @@ export default function Home() {
             gap: "25px",
           }}
         >
-          {randomProducts.map(
+         {randomProducts
+  .slice(0, visibleProducts)
+  .map(
             (
               product: any,
               index
@@ -307,6 +346,25 @@ export default function Home() {
                   >
                     {product.gender}
                   </p>
+                 <button
+  onClick={async () => {
+    await addToCart(product.id);
+    alert("Produk berhasil ditambahkan ke keranjang");
+  }}
+  style={{
+    width: "100%",
+    padding: "14px",
+    borderRadius: "12px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "bold",
+    background: "#FFD700",
+    color: "#000",
+    marginBottom: "10px",
+  }}
+>
+  🛒 Tambah ke Keranjang
+</button>
                   <Link href="/checkout">
                     <button
                       onClick={() => {
@@ -337,7 +395,36 @@ export default function Home() {
             )
           )}
         </div>
-        <WhatsappPopup />
+
+{visibleProducts < randomProducts.length && (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      marginTop: "40px",
+    }}
+  >
+    <button
+      onClick={() =>
+        setVisibleProducts((prev) => prev + 12)
+      }
+      style={{
+        padding: "15px 35px",
+        background: "#FFD700",
+        color: "#000",
+        border: "none",
+        borderRadius: "12px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        fontSize: "16px",
+      }}
+    >
+      Lihat Produk Selanjutnya
+    </button>
+  </div>
+)}
+
+<WhatsappPopup />
     </main>
   );
 }

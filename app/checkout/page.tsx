@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [product, setProduct] = useState("");
-  const [price, setPrice] = useState("");
+ const [items, setItems] = useState<any[]>([]);
   const [province, setProvince] = useState("");
 const [city, setCity] = useState("");
 const [district, setDistrict] = useState("");
@@ -15,22 +14,36 @@ const [address, setAddress] = useState("");
 const [courier, setCourier] = useState("JNE");
 
 useEffect(() => {
-  const data = localStorage.getItem("selectedProduct");
+  const data = localStorage.getItem("checkoutItems");
 
   if (data) {
-    const item = JSON.parse(data);
-
-    setProduct(item.name || "");
-    setPrice(item.price || "");
+    setItems(JSON.parse(data));
   }
 }, []);
-
-
 const sendWhatsApp = () => {
+  const daftarProduk = items
+    .map(
+      (item: any) =>
+        `${item.product.brand} ${item.product.name}
+Qty: ${item.qty}
+Harga: Rp ${Number(item.product.price).toLocaleString("id-ID")}
+Subtotal: Rp ${(Number(item.product.price) * item.qty).toLocaleString("id-ID")}`
+    )
+    .join("\n\n");
+
+  const total = items.reduce(
+    (total: number, item: any) =>
+      total + Number(item.product.price) * item.qty,
+    0
+  );
+
   const message =
-    "Pesanan SATUJAM.ID\n\n" +
-    "Produk: " + product + "\n" +
-    "Harga: " + price + "\n\n" +
+    "🛒 PESANAN SATUJAM.ID\n\n" +
+    daftarProduk +
+    "\n\n====================\n" +
+    "TOTAL: Rp " +
+    total.toLocaleString("id-ID") +
+    "\n\n" +
     "Nama: " + name + "\n" +
     "WhatsApp: " + phone + "\n\n" +
     "Provinsi: " + province + "\n" +
@@ -66,25 +79,58 @@ return (
     >
       Checkout SATUJAM.ID
     </h1>
+<div
+  style={{
+    background: "#111",
+    padding: "20px",
+    borderRadius: "15px",
+    marginBottom: "20px",
+  }}
+>
+  <h2>Ringkasan Pesanan</h2>
 
+  {items.map((item: any) => (
     <div
+      key={item.id}
       style={{
-        background: "#111",
-        padding: "20px",
-        borderRadius: "15px",
-        marginBottom: "20px",
+        borderBottom: "1px solid #333",
+        paddingBottom: "15px",
+        marginBottom: "15px",
       }}
     >
-      <h2>Ringkasan Pesanan</h2>
-
       <p>
-        <strong>Produk:</strong> {product}
+        <strong>{item.product.brand}</strong>
       </p>
 
+      <p>{item.product.name}</p>
+
       <p>
-        <strong>Harga:</strong> {price}
+        Harga: Rp{" "}
+        {Number(item.product.price).toLocaleString("id-ID")}
+      </p>
+
+      <p>Qty: {item.qty}</p>
+
+      <p>
+        Subtotal: Rp{" "}
+        {(Number(item.product.price) * item.qty).toLocaleString("id-ID")}
       </p>
     </div>
+  ))}
+
+  <h2 style={{ marginTop: "20px" }}>
+    Total: Rp{" "}
+    {items
+      .reduce(
+        (total: number, item: any) =>
+          total + Number(item.product.price) * item.qty,
+        0
+      )
+      .toLocaleString("id-ID")}
+  </h2>
+</div>
+   
+       
 
 <h2
   style={{
