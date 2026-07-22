@@ -90,57 +90,45 @@ export default function Home() {
         fontFamily: "Arial",
       }}
     >
-      <header
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "30px",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            margin: "30px 0",
+          }}
+        >
+          <h1
   style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: "30px",
-    gap: "20px",
+    color: "#fff",
+    fontSize: "clamp(28px, 7vw, 48px)",
+    fontWeight: "bold",
+    letterSpacing: "2px",
+    margin: 0,
+    textAlign: "center",
+    wordBreak: "break-word",
   }}
 >
-  <div>
-    <h1
-      style={{
-        color: "#FFD700",
-        fontSize: "clamp(28px, 6vw, 44px)",
-        margin: 0,
-        fontWeight: "bold",
-        letterSpacing: "2px",
-      }}
-    >
-      SATUJAM.ONLINE
-    </h1>
+  SATUJAM.ONLINE
+</h1>
 
-    <p
-      style={{
-        color: "#bbb",
-        marginTop: "8px",
-        fontSize: "16px",
-      }}
-    >
-      Luxury Watch Store
-    </p>
-  </div>
-
-  <nav
-    style={{
-      display: "flex",
-      gap: "25px",
-      fontWeight: "bold",
-      color: "#fff",
-      flexWrap: "wrap",
-    }}
-  >
-    <span style={{ cursor: "pointer" }}>Beranda</span>
-    <span style={{ cursor: "pointer" }}>Produk</span>
-    <span style={{ cursor: "pointer" }}>Brand</span>
-    <span style={{ cursor: "pointer" }}>Kontak</span>
-  </nav>
-</header>
-      
-         
+          <p
+            style={{
+              color: "#bbb",
+              fontSize: "18px",
+              marginTop: "10px",
+            }}
+          >
+            Luxury Watch Store
+          </p>
+        </div>
+         </div>
 <BannerSlider />
 
 <input
