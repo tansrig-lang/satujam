@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+const ADMIN_PIN = "rolex@1";
 
 type Product = {
   id: number;
@@ -16,6 +17,20 @@ type Product = {
 };
 
 export default function AdminPage() {
+  const [authorized, setAuthorized] = useState(false);
+const [pin, setPin] = useState("");
+
+function login() {
+  if (pin === ADMIN_PIN) {
+    localStorage.setItem(
+      "admin_login_expire",
+      (Date.now() + 3 * 60 * 60 * 1000).toString()
+    );
+    setAuthorized(true);
+  } else {
+    alert("PIN salah");
+  }
+}
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("Rolex");
@@ -55,10 +70,16 @@ const [newBrand, setNewBrand] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
+ useEffect(() => {
+  const expire = localStorage.getItem("admin_login_expire");
+
+  if (expire && Date.now() < Number(expire)) {
+    setAuthorized(true);
+  }
+
   loadBrands();
-    loadProducts();
-  }, []);
+  loadProducts();
+}, []);
 
   async function loadProducts() {
     const { data, error } = await supabase
@@ -174,14 +195,17 @@ async function addBrand() {
   console.log("DELETE ERROR:", error);
 
   if (error) {
-    alert(error.message);
-    return;
-  }
+  alert(error.message);
+  return;
+}
 
-  alert("Produk berhasil dihapus");
+alert("Produk berhasil dihapus");
 
-  loadProducts();
+loadProducts();
 };
+    
+
+  
 
  return (
   <main

@@ -77,57 +77,9 @@ async function deleteBrand(id: number) {
 
 
   
-  if (!authorized) {
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#000",
-        color: "#fff",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          background: "#111",
-          padding: "40px",
-          borderRadius: "20px",
-          width: "380px",
-        }}
-      >
-        <h1>LOGIN MEREK</h1>
-
-        <input
-          type="password"
-          placeholder="Masukkan PIN"
-          value={pin}
-          onChange={(e) =>
-            setPin(e.target.value)
-          }
-        />
-
-        <button
-          onClick={() => {
-            if (pin === ADMIN_PIN) {
-              localStorage.setItem(
-                "adminLoggedIn",
-                "true"
-              );
-
-              setAuthorized(true);
-            } else {
-              alert("PIN Salah");
-            }
-          }}
-        >
-          MASUK
-        </button>
-      </div>
-    </main>
-  );
-}
+  
+        
+  
 
   return (
     <main
