@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 import { getSessionId, decreaseCartItem } from "@/lib/cart";
+function toNumber(price: any) {
+  if (typeof price === "number") return price;
+
+  return Number(String(price).replace(/\./g, ""));
+}
 
 export default function CartPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -100,7 +105,7 @@ if (data) {
 
       <p>
         Harga : Rp{" "}
-        {Number(item.product.price).toLocaleString("id-ID")}
+        toNumber(item.product.price).toLocaleString("id-ID")
       </p>
 
       <div
@@ -136,7 +141,7 @@ if (data) {
       <p>
         Subtotal : Rp{" "}
         {(
-          Number(item.product.price) * item.qty
+          toNumber(item.product.price) * item.qty
         ).toLocaleString("id-ID")}
       </p>
     </div>
@@ -179,7 +184,7 @@ if (data) {
       .reduce(
         (total: number, item: any) =>
           total +
-          Number(item.product.price) * item.qty,
+          toNumber(item.product.price) * item.qty
         0
       )
       .toLocaleString("id-ID")}

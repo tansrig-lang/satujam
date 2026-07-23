@@ -335,8 +335,10 @@ useEffect(() => {
                       marginBottom: "10px",
                     }}
                   >
-                    {product.price}
-                  </p>
+                   
+  Rp{" "}
+  {Number(product.price).toLocaleString("id-ID")}
+</p>
 
                   <p
                     style={{
