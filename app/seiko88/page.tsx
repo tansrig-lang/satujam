@@ -465,7 +465,7 @@ loadProducts();
 >
   <button
     onClick={() => {
-     window.location.href = `/seiko88/edit/${product.id}`;{product.id}`;
+     window.location.href = `/seiko88/edit/${product.id}`;
     }}
     style={{
       padding: "10px 18px",
