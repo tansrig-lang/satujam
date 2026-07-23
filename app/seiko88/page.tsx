@@ -432,13 +432,45 @@ async function addBrand() {
 
           <p>{product.description}</p>
 
-          <button
-            onClick={() =>
-              deleteProduct(product.id)
-            }
-          >
-            HAPUS
-          </button>
+         <div
+  style={{
+    display: "flex",
+    gap: "10px",
+    marginTop: "15px",
+  }}
+>
+  <button
+    onClick={() => {
+      window.location.href = `/admin/edit/${product.id}`;
+    }}
+    style={{
+      padding: "10px 18px",
+      background: "#0070f3",
+      color: "#fff",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    ✏️ EDIT
+  </button>
+
+  <button
+    onClick={() => deleteProduct(product.id)}
+    style={{
+      padding: "10px 18px",
+      background: "#e53935",
+      color: "#fff",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    🗑️ HAPUS
+  </button>
+</div>
         </div>
       ))}
       </div>
