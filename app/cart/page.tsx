@@ -184,7 +184,7 @@ if (data) {
       .reduce(
         (total: number, item: any) =>
           total +
-          toNumber(item.product.price) * item.qty
+          toNumber(item.product.price) * item.qty,
         0
       )
       .toLocaleString("id-ID")}
