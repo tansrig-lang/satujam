@@ -165,32 +165,32 @@ console.log("ERROR:", error);
 <input
   type="file"
   accept="image/*"
-  
   onChange={async (e) => {
     const file = e.target.files?.[0];
 
     if (!file) return;
 
-    const formData = new FormData();
+    const fileName = `${Date.now()}-${file.name}`;
 
-    formData.append("file", file);
+    const { error } = await supabase.storage
+      .from("banners")
+      .upload(fileName, file);
 
-    const res = await fetch(
-      "/api/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-   
-
-    const data = await res.json();
-
-    if (data.success) {
-      setImage(data.image);
+    if (error) {
+      alert(error.message);
+      return;
     }
+
+    const { data } = supabase.storage
+      .from("banners")
+      .getPublicUrl(fileName);
+
+    setImage(data.publicUrl);
   }}
 />
+    
+
+
         {image && (
           <img
             src={image}
