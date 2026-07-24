@@ -203,6 +203,68 @@ alert("Produk berhasil dihapus");
 
 loadProducts();
 };
+if (!authorized) {
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#000",
+      }}
+    >
+      <div
+        style={{
+          width: "380px",
+          background: "#111",
+          padding: "40px",
+          borderRadius: "20px",
+          textAlign: "center",
+        }}
+      >
+        <h1 style={{ color: "#fff", marginBottom: "25px" }}>
+          ADMIN SATUJAM.ID
+        </h1>
+
+        <input
+          type="password"
+          placeholder="Masukkan PIN"
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") login();
+          }}
+          style={{
+            width: "100%",
+            padding: "15px",
+            borderRadius: "10px",
+            border: "1px solid #444",
+            background: "#1a1a1a",
+            color: "#fff",
+            marginBottom: "20px",
+          }}
+        />
+
+        <button
+          onClick={login}
+          style={{
+            width: "100%",
+            padding: "15px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#d4af37",
+            color: "#000",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          MASUK
+        </button>
+      </div>
+    </main>
+  );
+}
     
 
   
@@ -223,6 +285,25 @@ loadProducts();
       }}
     >
       <h1>ADMIN SATUJAM.ID</h1>
+      <button
+  onClick={() => {
+    localStorage.removeItem("admin_login_expire");
+    setAuthorized(false);
+    setPin("");
+  }}
+  style={{
+    padding: "10px 20px",
+    background: "#e53935",
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    float: "right",
+    marginBottom: "20px",
+  }}
+>
+  LOGOUT
+</button>
 
       <div
         style={{
