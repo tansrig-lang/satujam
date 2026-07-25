@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://satujam.online"),
+   verification: {
+    google: "I52WVguBKB5TrSzMzezGsv-mFgkezDR9-QL7SLYI_ko",
+  },
 
   title: {
     default: "SATUJAM.ONLINE | Jual Jam Tangan Original Medan",
