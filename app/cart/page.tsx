@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+
 import { getSessionId, decreaseCartItem } from "@/lib/cart";
 function toNumber(price: any) {
   if (typeof price === "number") return price;
