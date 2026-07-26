@@ -365,6 +365,23 @@ useEffect(() => {
     marginBottom: "10px",
   }}
 >
+  <Link href={`/product/${product.slug}`}>
+  <button
+    style={{
+      width: "100%",
+      padding: "14px",
+      borderRadius: "12px",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "bold",
+      background: "#444",
+      color: "#fff",
+      marginBottom: "10px",
+    }}
+  >
+    👁 Lihat Detail
+  </button>
+</Link>
   🛒 Tambah ke Keranjang
 </button>
                <Link href="/checkout">

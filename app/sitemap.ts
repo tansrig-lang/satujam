@@ -1,18 +1,15 @@
-import type { MetadataRoute } from "next";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { data: products, error } = await supabase
+    .from("products")
+    .select("slug");
 
-export default function sitemap(): MetadataRoute.Sitemap {
+  console.log(products);
+  console.log(error);
+
   return [
     {
       url: "https://satujam.online",
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: "https://satujam.online/brands",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
     },
   ];
 }
