@@ -17,8 +17,10 @@ useEffect(() => {
   const data = localStorage.getItem("checkoutItems");
 
   if (data) {
-    setItems(JSON.parse(data));
-  }
+  const parsed = JSON.parse(data);
+  console.log(parsed);
+  setItems(parsed);
+}
 }, []);
 const sendWhatsApp = () => {
   const daftarProduk = items
