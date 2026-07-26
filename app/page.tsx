@@ -367,30 +367,32 @@ useEffect(() => {
 >
   🛒 Tambah ke Keranjang
 </button>
-                  <Link href="/checkout">
-                    <button
-                      onClick={() => {
-                        localStorage.setItem(
-                          "selectedProduct",
-                          JSON.stringify({
-                            name: product.name,
-                            price: product.price,
-                          })
-                        );
-                      }}
-                      style={{
-                        width: "100%",
-                        padding: "14px",
-                        borderRadius: "12px",
-                        border: "none",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      BELI SEKARANG
-                    </button>
-                  </Link>
-
+               <Link href="/checkout">
+  <button
+    onClick={() => {
+      localStorage.setItem(
+        "checkoutItems",
+        JSON.stringify([
+          {
+            id: product.id,
+            qty: 1,
+            product: product,
+          },
+        ])
+      );
+    }}
+    style={{
+      width: "100%",
+      padding: "14px",
+      borderRadius: "12px",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    BELI SEKARANG
+  </button>
+</Link> 
 
                 </div>
               </div>
