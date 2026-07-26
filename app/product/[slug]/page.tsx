@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { createClient } from "@supabase/supabase-js";
-import CheckoutForm from "@/components/CheckoutForm";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import CheckoutForm from "../../components/CheckoutForm";
 
+import { supabase } from "@/lib/supabase";
 type Props = {
   params: Promise<{
     slug: string;
