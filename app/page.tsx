@@ -348,24 +348,7 @@ useEffect(() => {
                   >
                     {product.gender}
                   </p>
-                 <button
-  onClick={async () => {
-    await addToCart(product.id);
-    alert("Produk berhasil ditambahkan ke keranjang");
-  }}
-  style={{
-    width: "100%",
-    padding: "14px",
-    borderRadius: "12px",
-    border: "none",
-    cursor: "pointer",
-    fontWeight: "bold",
-    background: "#FFD700",
-    color: "#000",
-    marginBottom: "10px",
-  }}
->
-  <Link href={`/product/${product.slug}`}>
+     <Link href={`/product/${product.slug}`}>
   <button
     style={{
       width: "100%",
@@ -382,9 +365,28 @@ useEffect(() => {
     👁 Lihat Detail
   </button>
 </Link>
+
+<button
+  onClick={async () => {
+    await addToCart(product.id);
+    alert("Produk berhasil ditambahkan ke keranjang");
+  }}
+  style={{
+    width: "100%",
+    padding: "14px",
+    borderRadius: "12px",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: "bold",
+    background: "#FFD700",
+    color: "#000",
+    marginBottom: "10px",
+  }}
+>
   🛒 Tambah ke Keranjang
 </button>
-               <Link href="/checkout">
+
+<Link href="/checkout">
   <button
     onClick={() => {
       localStorage.setItem(
@@ -393,7 +395,7 @@ useEffect(() => {
           {
             id: product.id,
             qty: 1,
-            product: product,
+            product,
           },
         ])
       );
@@ -409,7 +411,10 @@ useEffect(() => {
   >
     BELI SEKARANG
   </button>
-</Link> 
+</Link>           
+
+  
+
 
                 </div>
               </div>
