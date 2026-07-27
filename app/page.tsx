@@ -349,6 +349,17 @@ useEffect(() => {
                     {product.gender}
                   </p>
      <Link href={`/product/${product.slug}`}>
+     <p style={{ color: "red", fontSize: "12px" }}>
+  ID: {product.id}
+</p>
+
+<p style={{ color: "yellow", fontSize: "12px" }}>
+  SLUG: {String(product.slug)}
+</p>
+
+<p style={{ color: "lime", fontSize: "12px" }}>
+  LINK: /product/{String(product.slug)}
+</p>
   <button
     style={{
       width: "100%",
