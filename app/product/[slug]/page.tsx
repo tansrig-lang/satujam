@@ -78,9 +78,6 @@ export default async function ProductPage({
   console.log("Error:", error);
 
   if (!product) {
-    notFound();
-  }
-
   return (
     <main
       style={{
@@ -90,6 +87,26 @@ export default async function ProductPage({
         padding: "40px",
       }}
     >
+      <h1>Produk tidak ditemukan</h1>
+
+      <p>Slug: {slug}</p>
+
+      <pre>
+        {JSON.stringify(error, null, 2)}
+      </pre>
+    </main>
+  );
+}
+
+return (
+  <main
+    style={{
+      background: "#000",
+      color: "#fff",
+      minHeight: "100vh",
+      padding: "40px",
+    }}
+  >
       <Link href="/">
         <button
           style={{
