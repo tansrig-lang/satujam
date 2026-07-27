@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import CheckoutForm from "../../components/CheckoutForm";
-
 import { supabase } from "@/lib/supabase";
+
 type Props = {
   params: Promise<{
     slug: string;
@@ -67,11 +67,15 @@ export default async function ProductPage({
 }: Props) {
   const { slug } = await params;
 
-  const { data: product } = await supabase
+  const { data: product, error } = await supabase
     .from("products")
     .select("*")
     .eq("slug", slug)
     .single();
+
+  console.log("Slug:", slug);
+  console.log("Product:", product);
+  console.log("Error:", error);
 
   if (!product) {
     notFound();
@@ -125,8 +129,7 @@ export default async function ProductPage({
           )}
 
           <h2>
-            Rp{" "}
-            {Number(product.price).toLocaleString("id-ID")}
+            Rp {Number(product.price).toLocaleString("id-ID")}
           </h2>
 
           <hr style={{ margin: "20px 0" }} />
