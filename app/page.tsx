@@ -348,34 +348,41 @@ useEffect(() => {
                   >
                     {product.gender}
                   </p>
-     <Link href={`/product/${product.slug}`}>
-     <p style={{ color: "red", fontSize: "12px" }}>
-  ID: {product.id}
-</p>
-
-<p style={{ color: "yellow", fontSize: "12px" }}>
-  SLUG: {String(product.slug)}
-</p>
-
-<p style={{ color: "lime", fontSize: "12px" }}>
-  LINK: /product/{String(product.slug)}
-</p>
+     {product.slug ? (
+  <Link href={`/product/${product.slug}`}>
+    <button
+      style={{
+        width: "100%",
+        padding: "14px",
+        borderRadius: "12px",
+        border: "none",
+        cursor: "pointer",
+        fontWeight: "bold",
+        background: "#444",
+        color: "#fff",
+        marginBottom: "10px",
+      }}
+    >
+      👁 Lihat Detail
+    </button>
+  </Link>
+) : (
   <button
+    disabled
     style={{
       width: "100%",
       padding: "14px",
       borderRadius: "12px",
       border: "none",
-      cursor: "pointer",
-      fontWeight: "bold",
-      background: "#444",
-      color: "#fff",
+      background: "#666",
+      color: "#ccc",
+      cursor: "not-allowed",
       marginBottom: "10px",
     }}
   >
-    👁 Lihat Detail
+    Slug belum tersedia
   </button>
-</Link>
+)}
 
 <button
   onClick={async () => {
