@@ -148,7 +148,13 @@ async function addBrand() {
   loadBrands();
 }
 
-
+const createSlug = (text: string) => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
   const saveProduct = async () => {
     if (!name || !price || !image) {
       alert("Nama, Harga dan Gambar wajib diisi");
@@ -158,17 +164,18 @@ async function addBrand() {
     const { error } = await supabase
       .from("products")
       .insert([
-        {
-          brand,
-          name,
-          price,
-          gender,
-          weight,
-          stock,
-          image,
-          description,
-        },
-      ]);
+  {
+    brand,
+    name,
+    slug: createSlug(name),
+    price,
+    gender,
+    weight,
+    stock,
+    image,
+    description,
+  },
+]);
 
     if (error) {
       alert(error.message);
