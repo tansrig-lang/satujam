@@ -448,23 +448,23 @@ useEffect(() => {
       marginTop: "40px",
     }}
   >
-    <button
-      onClick={() =>
-        setVisibleProducts((prev) => prev + 12)
-      }
-      style={{
-        padding: "15px 35px",
-        background: "#FFD700",
-        color: "#000",
-        border: "none",
-        borderRadius: "12px",
-        fontWeight: "bold",
-        cursor: "pointer",
-        fontSize: "16px",
-      }}
-    >
-      Lihat Produk Selanjutnya
-    </button>
+    <Link href="/products">
+  <button
+    style={{
+      padding: "15px 35px",
+      background: "#FFD700",
+      color: "#000",
+      border: "none",
+      borderRadius: "12px",
+      fontWeight: "bold",
+      cursor: "pointer",
+      fontSize: "16px",
+    }}
+  >
+    Lihat Semua Produk →
+  </button>
+</Link>
+  
   </div>
 )}
 
