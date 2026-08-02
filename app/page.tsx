@@ -287,7 +287,7 @@ useEffect(() => {
               index
             ) => (
               <div
-                key={index}
+               key={product.slug}
                 style={{
                   backgroundColor:
                     "#111",
