@@ -24,6 +24,7 @@ export default function EditProductPage() {
   const [weight, setWeight] = useState("");
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
+  const [active, setActive] = useState(true);
 
   const [image, setImage] = useState("");
   const [preview, setPreview] = useState("");
@@ -62,6 +63,7 @@ export default function EditProductPage() {
     setDescription(data.description || "");
     setImage(data.image || "");
     setPreview(data.image || "");
+    setActive(data.active ?? true);
   }
 
   async function uploadImage(e: ChangeEvent<HTMLInputElement>) {
@@ -104,6 +106,7 @@ export default function EditProductPage() {
         stock: Number(stock),
         description,
         image,
+        active,
       })
       .eq("id", id);
 
@@ -186,7 +189,20 @@ export default function EditProductPage() {
         onChange={(e) => setStock(e.target.value)}
         style={{ width: "100%", padding: 12, marginBottom: 20 }}
       />
+<label>Status Produk</label>
 
+<select
+  value={active ? "aktif" : "nonaktif"}
+  onChange={(e) => setActive(e.target.value === "aktif")}
+  style={{
+    width: "100%",
+    padding: 12,
+    marginBottom: 20,
+  }}
+>
+  <option value="aktif">Aktif</option>
+  <option value="nonaktif">Nonaktif</option>
+</select>
       <label>Deskripsi</label>
       <textarea
         rows={6}

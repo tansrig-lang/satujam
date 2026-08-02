@@ -82,15 +82,16 @@ const [newBrand, setNewBrand] = useState("");
 }, []);
 
   async function loadProducts() {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("id", { ascending: false });
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .order("id", { ascending: false });
 
-    if (!error) {
-      setProducts(data || []);
-    }
+  if (!error) {
+    setProducts(data || []);
   }
+}
 
  const uploadImage = async (
   e: React.ChangeEvent<HTMLInputElement>
@@ -292,6 +293,31 @@ if (!authorized) {
       }}
     >
       <h1>ADMIN SATUJAM.ID</h1>
+      <div
+  style={{
+    display: "flex",
+    gap: "10px",
+    marginTop: "15px",
+    marginBottom: "20px",
+  }}
+>
+  <button
+    onClick={() => {
+      window.location.href = "/seiko88/nonaktif";
+    }}
+    style={{
+      padding: "12px 20px",
+      background: "#f59e0b",
+      color: "#000",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    📦 PRODUK NONAKTIF
+  </button>
+</div>
       <button
   onClick={() => {
     localStorage.removeItem("admin_login_expire");
