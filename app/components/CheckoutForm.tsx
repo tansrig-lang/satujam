@@ -161,7 +161,7 @@ export default function CheckoutForm({
       </h2>
 
       <img
-        src="/qris-mandiri.jpg"
+          src="/qris.jpg"
         alt="QRIS Mandiri"
         style={{
           width: "350px",
