@@ -121,20 +121,26 @@ return (
 
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "40px",
+         display: "flex",
+flexWrap: "wrap",
+gap: "40px",
+alignItems: "flex-start",
         }}
       >
         <img
-          src={product.image}
-          alt={product.name}
-          style={{
-            width: "100%",
-            borderRadius: "20px",
-            objectFit: "contain",
-          }}
-        />
+  src={product.image}
+  alt={product.name}
+  style={{
+    width: "100%",
+    maxWidth: "500px",
+    height: "auto",
+    display: "block",
+    margin: "0 auto",
+    borderRadius: "20px",
+    objectFit: "contain",
+    background: "#111",
+  }}
+/>
 
         <div>
           <h1>{product.name}</h1>

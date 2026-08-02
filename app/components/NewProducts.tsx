@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 type Product = {
   id: number;
@@ -27,18 +28,20 @@ export default function NewProducts({
       >
         <h2 style={{ margin: 0 }}>🔥 Produk Terbaru</h2>
 
-        <button
-          style={{
-            background: "transparent",
-            border: "1px solid #FFD700",
-            color: "#FFD700",
-            padding: "8px 16px",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          Lihat Semua
-        </button>
+        <Link href="/products">
+  <button
+    style={{
+      background: "transparent",
+      border: "1px solid #FFD700",
+      color: "#FFD700",
+      padding: "8px 16px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Lihat Semua
+  </button>
+</Link>
       </div>
 
       <div
