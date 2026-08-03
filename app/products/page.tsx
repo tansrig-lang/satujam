@@ -18,10 +18,10 @@ const [brands, setBrands] = useState<string[]>(["Semua"]);
   }, []);
 
   async function loadProducts() {
-    const { data } = await supabase
-      .from("products")
-      .select("*")
-      .order("id", { ascending: false });
+   const { data } = await supabase
+  .from("products")
+  .select("id,brand,name,price,image,gender,slug")
+  .order("id", { ascending: false });
 
     setProducts(data || []);
     const uniqueBrands = [
@@ -183,6 +183,8 @@ const filtered = products.filter((product) => {
             <img
               src={product.image}
               alt={product.name}
+              loading="lazy"
+    decoding="async"
               style={{
                 width: "100%",
                 height: "320px",
