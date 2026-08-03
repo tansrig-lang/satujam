@@ -148,27 +148,40 @@ async function addBrand() {
 
   loadBrands();
 }
+async function createUniqueSlug(text: string) {
+  const baseSlug = createSlug(text);
 
-const createSlug = (text: string) => {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-};
+  let slug = baseSlug;
+  let count = 2;
+
+  while (true) {
+    const { data } = await supabase
+      .from("products")
+      .select("id")
+      .eq("slug", slug);
+
+    if (!data || data.length === 0) {
+      return slug;
+    }
+
+    slug = `${baseSlug}-${count}`;
+    count++;
+  }
+}
   const saveProduct = async () => {
     if (!name || !price || !image) {
       alert("Nama, Harga dan Gambar wajib diisi");
       return;
     }
-
+const slug = await createUniqueSlug(name);
     const { error } = await supabase
       .from("products")
+     
       .insert([
   {
     brand,
     name,
-    slug: createSlug(name),
+   slug,
     price,
     gender,
     weight,
