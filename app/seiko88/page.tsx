@@ -148,6 +148,13 @@ async function addBrand() {
 
   loadBrands();
 }
+const createSlug = (text: string) => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
 async function createUniqueSlug(text: string) {
   const baseSlug = createSlug(text);
 
