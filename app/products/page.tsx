@@ -194,9 +194,15 @@ const filtered = products.filter((product) => {
             />
 
             <div style={{ padding: "20px" }}>
-              <h3 style={{ color: "#FFD700" }}>
-                {product.brand}
-              </h3>
+              <Link
+  href={`/brands/${encodeURIComponent(product.brand)}`}
+  style={{
+    color: "#FFD700",
+    textDecoration: "none",
+  }}
+>
+  <h3>{product.brand}</h3>
+</Link>
 
               <h2>{product.name}</h2>
 

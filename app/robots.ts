@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 
-
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -12,6 +11,8 @@ export default function robots(): MetadataRoute.Robots {
           "/checkout",
           "/account",
           "/admin",
+          "/seiko88",
+          "/api",
         ],
       },
     ],
@@ -19,4 +20,3 @@ export default function robots(): MetadataRoute.Robots {
     host: "https://satujam.online",
   };
 }
-

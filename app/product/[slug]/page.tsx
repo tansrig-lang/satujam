@@ -146,9 +146,15 @@ alignItems: "flex-start",
           <h1>{product.name}</h1>
 
           {product.brand && (
-            <h3 style={{ color: "#FFD700" }}>
-              {product.brand}
-            </h3>
+            <Link
+  href={`/brands/${encodeURIComponent(product.brand)}`}
+  style={{
+    color: "#FFD700",
+    textDecoration: "none",
+  }}
+>
+  <h3>{product.brand}</h3>
+</Link>
           )}
 
           <h2>
