@@ -1,30 +1,34 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
 import { supabase } from "@/lib/supabase";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://satujam.online";
+
   const { data: products } = await supabase
     .from("products")
-    .select("slug");
+    .select("slug")
+    .eq("active", true);
 
   const productUrls =
     products?.map((product) => ({
-      url: `https://satujam.online/product/${product.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.9,
+      url: `${baseUrl}/product/${product.slug}`,
+     lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
     })) ?? [];
 
   return [
     {
-      url: "https://satujam.online",
+      url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: "daily" as const,
+      changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: "https://satujam.online/brands",
+      url: `${baseUrl}/products`,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     ...productUrls,
   ];
