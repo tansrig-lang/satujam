@@ -20,7 +20,7 @@ export async function generateMetadata({
     .from("products")
     .select("name,description,image,brand")
     .eq("slug", slug)
-    .single();
+   .maybeSingle();
 
   if (!product) {
     return {
@@ -71,7 +71,7 @@ export default async function ProductPage({
     .from("products")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
   console.log("Slug:", slug);
   console.log("Product:", product);
