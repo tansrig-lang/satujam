@@ -22,46 +22,100 @@ export default function Home() {
     useState("Semua");
   const [brands, setBrands] =
     useState<string[]>(["Semua"]);
- const [visibleProducts, setVisibleProducts] = useState(12);
+const PRODUCTS_PER_PAGE = 20;
+
+const [page, setPage] = useState(0);
+const [hasMore, setHasMore] = useState(true);
+const [loadingProducts, setLoadingProducts] = useState(false);
 
   
-    async function loadProducts() {
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("id", {
-      ascending: false,
-    });
 
-  console.log("PRODUCTS:", data);
-  console.log("ERROR:", error);
+
+async function loadProducts(
+  pageNumber = 0,
+  reset = false
+) {
+  if (loadingProducts) return;
+
+  setLoadingProducts(true);
+
+  const from = pageNumber * PRODUCTS_PER_PAGE;
+  const to = from + PRODUCTS_PER_PAGE - 1;
+
+  let query = supabase
+    .from("products")
+    .select(
+      "id, brand, name, price, gender, weight, stock, image, slug, description",
+      { count: "exact" }
+    )
+    .eq("active", true)
+    .order("id", { ascending: false })
+    .range(from, to);
+
+  if (selectedBrand !== "Semua") {
+    query = query.eq("brand", selectedBrand);
+  }
+
+  if (selectedGender !== "Semua") {
+    query = query.eq("gender", selectedGender);
+  }
+
+  if (search.trim() !== "") {
+    query = query.ilike(
+      "name",
+      `%${search.trim()}%`
+    );
+  }
+
+  const {
+    data,
+    error,
+    count,
+  } = await query;
+
+  console.log("PRODUCT BATCH:", data);
+  console.log("PRODUCT ERROR:", error);
 
   if (error) {
-    console.log(error);
+    console.error(
+      "Gagal mengambil produk:",
+      error
+    );
+
+    setLoadingProducts(false);
     return;
   }
 
-  setProducts(data || []);
+  const newProducts = data || [];
 
-    const uniqueBrands = [
-      "Semua",
-      ...new Set(
-        (data || [])
-          .map((p) => p.brand)
-          .filter(Boolean)
-      ),
-    ];
-
-
-
-    setBrands(uniqueBrands);
+  if (reset) {
+    setProducts(newProducts);
+  } else {
+    setProducts((prev) => [
+      ...prev,
+      ...newProducts,
+    ]);
   }
+
+  const totalLoaded = reset
+    ? newProducts.length
+    : products.length + newProducts.length;
+
+  setHasMore(
+    count !== null
+      ? totalLoaded < count
+      : newProducts.length === PRODUCTS_PER_PAGE
+  );
+
+  setPage(pageNumber);
+
+  setLoadingProducts(false);
+}
+
 useEffect(() => {
-  loadProducts();
+  loadProducts(0, true);
+}, [search, selectedBrand, selectedGender]);
 
-
-
-}, []);
 
   const filteredProducts = [...products]
   .sort((a: any, b: any) => {
@@ -112,8 +166,7 @@ useEffect(() => {
       searchMatch
     );
   });
-  const randomProducts =
-    filteredProducts.slice(0, 20);
+  
 
   return (
     <main
@@ -279,9 +332,7 @@ useEffect(() => {
             gap: "25px",
           }}
         >
-         {randomProducts
-  .slice(0, visibleProducts)
-  .map(
+    {filteredProducts.map(
             (
               product: any,
               index
@@ -440,31 +491,36 @@ useEffect(() => {
           )}
         </div>
 
-{visibleProducts < randomProducts.length && (
+{hasMore && (
   <div
     style={{
       display: "flex",
       justifyContent: "center",
       marginTop: "40px",
+      marginBottom: "40px",
     }}
   >
-    <Link href="/products">
-  <button
-    style={{
-      padding: "15px 35px",
-      background: "#FFD700",
-      color: "#000",
-      border: "none",
-      borderRadius: "12px",
-      fontWeight: "bold",
-      cursor: "pointer",
-      fontSize: "16px",
-    }}
-  >
-    Lihat Semua Produk →
-  </button>
-</Link>
-  
+    <button
+      onClick={() => loadProducts(page + 1, false)}
+      disabled={loadingProducts}
+      style={{
+        padding: "15px 35px",
+        background: "#FFD700",
+        color: "#000",
+        border: "none",
+        borderRadius: "12px",
+        fontWeight: "bold",
+        cursor: loadingProducts
+          ? "not-allowed"
+          : "pointer",
+        fontSize: "16px",
+        opacity: loadingProducts ? 0.6 : 1,
+      }}
+    >
+      {loadingProducts
+        ? "MEMUAT PRODUK..."
+        : "LIHAT 20 PRODUK LAGI →"}
+    </button>
   </div>
 )}
 
