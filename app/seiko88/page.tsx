@@ -51,6 +51,7 @@ export default function AdminPage() {
   const [loadingImage, setLoadingImage] = useState(false);
 
   useEffect(() => {
+    
     const expire = localStorage.getItem("admin_login_expire");
 
     if (expire && Date.now() < Number(expire)) {
@@ -60,6 +61,13 @@ export default function AdminPage() {
     loadBrands();
     loadProducts();
   }, []);
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    loadProducts(search);
+  }, 400);
+
+  return () => clearTimeout(timer);
+}, [search]);
 
   function login() {
     if (pin === ADMIN_PIN) {
@@ -92,10 +100,18 @@ export default function AdminPage() {
     }
   }
 
- async function loadProducts() {
-  console.log("Mengambil 24 produk terakhir tanpa gambar...");
+ async function loadProducts(searchKeyword = "") {
+  const keyword = searchKeyword
+    .trim()
+    .replace(/[\s-]/g, "");
 
-  const { data, error } = await supabase
+  console.log(
+    keyword
+      ? `Mencari produk: ${keyword}`
+      : "Mengambil 24 produk terakhir tanpa gambar..."
+  );
+
+  let query = supabase
     .from("products")
     .select(
       "id, brand, name, price, gender, weight, stock, description"
@@ -104,8 +120,21 @@ export default function AdminPage() {
     .order("id", { ascending: false })
     .limit(24);
 
+  // Jika ada pencarian,
+  // cari berdasarkan nama ATAU merek.
+  if (keyword !== "") {
+    query = query.or(
+      `name.ilike.%${keyword}%,brand.ilike.%${keyword}%`
+    );
+  }
+
+  const { data, error } = await query;
+
   if (error) {
-    console.error("PRODUCT ERROR:", error.message);
+    console.error(
+      "PRODUCT ERROR:",
+      error.message
+    );
     return;
   }
 
@@ -115,7 +144,6 @@ export default function AdminPage() {
     `Berhasil mengambil ${data?.length || 0} produk tanpa memuat gambar.`
   );
 }
-
   // ============================================================
   // UPLOAD GAMBAR PRODUK BARU
   // ============================================================
@@ -400,17 +428,7 @@ export default function AdminPage() {
   // FILTER SEARCH
   // ============================================================
 
-  const filteredProducts = products.filter((product) => {
-    const keyword = search
-      .toLowerCase()
-      .replace(/[\s-]/g, "");
-
-    const text = `${product.brand}${product.name}`
-      .toLowerCase()
-      .replace(/[\s-]/g, "");
-
-    return text.includes(keyword);
-  });
+  const filteredProducts = products;
 
   // ============================================================
   // ADMIN
