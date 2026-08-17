@@ -99,15 +99,14 @@ export default function AdminPage() {
       setBrand(data[0].name);
     }
   }
+async function loadProducts(searchKeyword = "") {
+  const rawKeyword = searchKeyword.trim();
 
- async function loadProducts(searchKeyword = "") {
-  const keyword = searchKeyword
-    .trim()
-    .replace(/[\s-]/g, "");
+  const keyword = rawKeyword.replace(/[\s-]/g, "");
 
   console.log(
-    keyword
-      ? `Mencari produk: ${keyword}`
+    rawKeyword
+      ? `Mencari produk: ${rawKeyword}`
       : "Mengambil 24 produk terakhir tanpa gambar..."
   );
 
@@ -120,21 +119,16 @@ export default function AdminPage() {
     .order("id", { ascending: false })
     .limit(24);
 
-  // Jika ada pencarian,
-  // cari berdasarkan nama ATAU merek.
-  if (keyword !== "") {
+  if (rawKeyword !== "") {
     query = query.or(
-      `name.ilike.%${keyword}%,brand.ilike.%${keyword}%`
+      `name.ilike.%${rawKeyword}%,brand.ilike.%${rawKeyword}%,description.ilike.%${rawKeyword}%`
     );
   }
 
   const { data, error } = await query;
 
   if (error) {
-    console.error(
-      "PRODUCT ERROR:",
-      error.message
-    );
+    console.error("PRODUCT ERROR:", error.message);
     return;
   }
 
