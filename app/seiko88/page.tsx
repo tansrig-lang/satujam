@@ -92,28 +92,29 @@ export default function AdminPage() {
     }
   }
 
-  async function loadProducts() {
-    console.log("Mengambil daftar produk tanpa gambar...");
+ async function loadProducts() {
+  console.log("Mengambil 24 produk terakhir tanpa gambar...");
 
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        "id, brand, name, price, gender, weight, stock, description"
-      )
-      .eq("active", true)
-      .order("id", { ascending: false });
+  const { data, error } = await supabase
+    .from("products")
+    .select(
+      "id, brand, name, price, gender, weight, stock, description"
+    )
+    .eq("active", true)
+    .order("id", { ascending: false })
+    .limit(24);
 
-    if (error) {
-      console.error("PRODUCT ERROR:", error.message);
-      return;
-    }
-
-    setProducts(data || []);
-
-    console.log(
-      `Berhasil mengambil ${data?.length || 0} produk tanpa memuat gambar.`
-    );
+  if (error) {
+    console.error("PRODUCT ERROR:", error.message);
+    return;
   }
+
+  setProducts(data || []);
+
+  console.log(
+    `Berhasil mengambil ${data?.length || 0} produk tanpa memuat gambar.`
+  );
+}
 
   // ============================================================
   // UPLOAD GAMBAR PRODUK BARU

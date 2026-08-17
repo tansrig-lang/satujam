@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-const PRODUCTS_PER_PAGE = 20;
+const PRODUCTS_PER_PAGE = 24;
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -427,7 +427,7 @@ export default function ProductsPage() {
                       "16px",
                   }}
                 >
-                  LIHAT 20 PRODUK
+                  LIHAT 24 PRODUK
                   LAGI →
                 </button>
               </div>
