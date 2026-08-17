@@ -49,93 +49,121 @@ export default function ProductsPage() {
     });
   }
 
-  async function loadProducts(
-    pageNumber = 0,
-    reset = false
-  ) {
-    if (loadingProducts) return;
+ async function loadProducts(
+  pageNumber = 0,
+  reset = false
+) {
+  if (loadingProducts) return;
 
-    setLoadingProducts(true);
+  setLoadingProducts(true);
 
-    const from = pageNumber * PRODUCTS_PER_PAGE;
-    const to = from + PRODUCTS_PER_PAGE - 1;
+  const rawKeyword = search.trim();
 
-    let query = supabase
-      .from("products")
-      .select(
-        "id,brand,name,price,image,gender,slug"
-      )
-      .order("id", {
-        ascending: false,
-      })
-      .range(from, to);
+  const hasFilter =
+    rawKeyword !== "" ||
+    selectedBrand !== "Semua" ||
+    selectedGender !== "Semua";
 
-    // Filter brand
-    if (selectedBrand !== "Semua") {
-      query = query.eq(
-        "brand",
-        selectedBrand
-      );
-    }
+  let query = supabase
+    .from("products")
+    .select(
+      "id,brand,name,price,image,gender,slug"
+    )
+    .order("id", {
+      ascending: false,
+    });
 
-    // Filter gender
-    if (selectedGender !== "Semua") {
-      query = query.eq(
-        "gender",
-        selectedGender
-      );
-    }
+  // Filter brand
+  if (selectedBrand !== "Semua") {
+    query = query.eq(
+      "brand",
+      selectedBrand
+    );
+  }
 
-    // Search nama atau brand
-    const keyword = search
-      .trim()
-      .replace(/[\s-]/g, "");
+  // Filter gender
+  if (selectedGender !== "Semua") {
+    query = query.eq(
+      "gender",
+      selectedGender
+    );
+  }
 
-    if (keyword !== "") {
-      query = query.or(
-        `name.ilike.%${keyword}%,brand.ilike.%${keyword}%`
-      );
-    }
+  // Search nama atau brand
+  if (rawKeyword !== "") {
+    query = query.or(
+      `name.ilike.%${rawKeyword}%,brand.ilike.%${rawKeyword}%`
+    );
+  }
 
-    const { data, error } = await query;
+  // -----------------------------------------
+  // MODE FILTER / SEARCH
+  // -----------------------------------------
+  // Kalau sedang mencari atau memakai filter,
+  // cari langsung ke database tetapi hanya ambil 24.
+  if (hasFilter) {
+    query = query.limit(PRODUCTS_PER_PAGE);
+  }
 
-    console.log(
-      "PRODUCTS PAGE:",
-      data
+  // -----------------------------------------
+  // MODE NORMAL
+  // -----------------------------------------
+  // Kalau tidak ada search/filter,
+  // gunakan pagination 24 produk.
+  else {
+    const from =
+      pageNumber * PRODUCTS_PER_PAGE;
+
+    const to =
+      from + PRODUCTS_PER_PAGE - 1;
+
+    query = query.range(from, to);
+  }
+
+  const { data, error } = await query;
+
+  console.log(
+    "PRODUCTS PAGE:",
+    data
+  );
+
+  if (error) {
+    console.error(
+      "Gagal mengambil produk:",
+      error
     );
 
-    if (error) {
-      console.error(
-        "Gagal mengambil produk:",
-        error
-      );
+    setLoadingProducts(false);
+    return;
+  }
 
-      setLoadingProducts(false);
-      return;
-    }
+  const newProducts = data || [];
 
-    const newProducts = data || [];
+  // Search/filter selalu mengganti daftar.
+  if (hasFilter || reset) {
+    setProducts(newProducts);
+  } else {
+    setProducts((prev) => [
+      ...prev,
+      ...newProducts,
+    ]);
+  }
 
-    if (reset) {
-      setProducts(newProducts);
-    } else {
-      setProducts((prev) => [
-        ...prev,
-        ...newProducts,
-      ]);
-    }
-
-    // Kalau hasil kurang dari 20,
-    // berarti sudah tidak ada produk berikutnya.
+  // Kalau sedang search/filter,
+  // tidak perlu tombol "produk berikutnya".
+  if (hasFilter) {
+    setHasMore(false);
+  } else {
     setHasMore(
       newProducts.length ===
         PRODUCTS_PER_PAGE
     );
-
-    setPage(pageNumber);
-    setLoadingProducts(false);
   }
 
+  setPage(pageNumber);
+
+  setLoadingProducts(false);
+}
   // Load pertama kali
   useEffect(() => {
     loadBrands();
