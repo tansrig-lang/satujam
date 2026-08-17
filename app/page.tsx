@@ -28,7 +28,26 @@ const [page, setPage] = useState(0);
 const [hasMore, setHasMore] = useState(true);
 const [loadingProducts, setLoadingProducts] = useState(false);
 
-  
+  async function loadBrands() {
+  const { data, error } = await supabase
+    .from("brands")
+    .select("name")
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("Gagal mengambil merek:", error);
+    return;
+  }
+
+  const brandNames = (data || [])
+    .map((brand: any) => String(brand.name || "").trim())
+    .filter(Boolean);
+
+  setBrands([
+    "Semua",
+    ...brandNames,
+  ]);
+}
 
 
 async function loadProducts(
@@ -111,6 +130,10 @@ async function loadProducts(
 
   setLoadingProducts(false);
 }
+
+useEffect(() => {
+  loadBrands();
+}, []);
 
 useEffect(() => {
   loadProducts(0, true);
