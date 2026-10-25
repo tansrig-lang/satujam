@@ -105,20 +105,16 @@ export default function ProductsPage() {
     query = query.limit(PRODUCTS_PER_PAGE);
   }
 
-  // -----------------------------------------
-  // MODE NORMAL
-  // -----------------------------------------
-  // Kalau tidak ada search/filter,
-  // gunakan pagination 24 produk.
-  else {
-    const from =
-      pageNumber * PRODUCTS_PER_PAGE;
+  const from =
+    pageNumber * PRODUCTS_PER_PAGE;
 
-    const to =
-      from + PRODUCTS_PER_PAGE - 1;
+  const to =
+    from + PRODUCTS_PER_PAGE - 1;
 
-    query = query.range(from, to);
-  }
+  query = query.range(from, to);
+
+
+  
 
   const { data, error } = await query;
 
@@ -140,25 +136,19 @@ export default function ProductsPage() {
   const newProducts = data || [];
 
   // Search/filter selalu mengganti daftar.
-  if (hasFilter || reset) {
-    setProducts(newProducts);
-  } else {
-    setProducts((prev) => [
-      ...prev,
-      ...newProducts,
-    ]);
-  }
-
+ if (reset) {
+  setProducts(newProducts);
+} else {
+  setProducts((prev) => [
+    ...prev,
+    ...newProducts,
+  ]);
+}
   // Kalau sedang search/filter,
   // tidak perlu tombol "produk berikutnya".
-  if (hasFilter) {
-    setHasMore(false);
-  } else {
-    setHasMore(
-  !hasFilter &&
+ setHasMore(
   newProducts.length === PRODUCTS_PER_PAGE
 );
-  }
 
   setPage(pageNumber);
 
