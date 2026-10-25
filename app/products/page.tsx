@@ -155,9 +155,9 @@ export default function ProductsPage() {
     setHasMore(false);
   } else {
     setHasMore(
-      newProducts.length ===
-        PRODUCTS_PER_PAGE
-    );
+  !hasFilter &&
+  newProducts.length === PRODUCTS_PER_PAGE
+);
   }
 
   setPage(pageNumber);
